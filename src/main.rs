@@ -1,5 +1,10 @@
-#[warn(unused_imports)]
-use std::net::*;
+#![allow(unused)]
+use std::io::prelude::*;
+use std::net::TcpStream;
+use rand::{
+    distributions::{Distribution, Standard},
+    Rng,
+};
 
 #[derive(PartialEq, Debug)]
 pub enum Weapon{
@@ -8,10 +13,38 @@ pub enum Weapon{
 	Scissors
 }
 
-fn main(){
-	battle(Weapon::Rock, Weapon::Paper);
+fn main() {//-> std::io::Result<()> {
+	test_battle_logic();
 }
 
+
+
+/**
+ *  Randomly generates a weapon. Each outcome has an equal opportunity to happen.
+ */
+impl Distribution<Weapon> for Standard {
+	
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Weapon {
+    	match rng.gen_range(0..=2) {
+            0 => Weapon::Rock,
+            1 => Weapon::Paper,
+            _ => Weapon::Scissors,
+        }
+    }
+}
+
+/**
+ * Runs 100 randomly generated battles to test the battle logic
+ */
+fn test_battle_logic(){
+	for _i in 1..100 {
+		battle(rand::random(), rand::random());
+	};
+	
+}
+
+
+/* Battles rps */
 fn battle(my_weapon: Weapon, opp_weapon: Weapon){
 	if my_weapon == Weapon::Rock {
 		if opp_weapon == Weapon::Rock {
